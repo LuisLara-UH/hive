@@ -1,0 +1,1 @@
+% piece("type", "black or white", Xposition, Yposition)
