@@ -1,3 +1,5 @@
+:- module(moves, [move_piece/1]).
+
 :- op(700, fx, move_piece).
 :- op(700, fx, move_queen).
 :- op(700, fx, move_beetle).
@@ -8,27 +10,47 @@
 :- op(700, fx, move_mosquito).
 :- op(700, fx, move_pillbug).
 
-move_queen piece(_, Color, Xpos, Ypos) :- !. % fill move
+:- op(250, yfx, to).
 
-move_beetle piece(_, Color, Xpos, Ypos) :- !. % fill move
+% piece(type, black or white, Piled, Row, Column)
 
-move_grasshopper piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_queen piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column) :- 
+    !. % fill move
 
-move_spider piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_beetle piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
 
-move_ant piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_grasshopper piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
 
-move_ladybug piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_spider piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
 
-move_mosquito piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_ant piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
 
-move_pillbug piece(_, Color, Xpos, Ypos) :- !. % fill move
+move_ladybug piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
 
-move_piece piece("Beetle", Color, Xpos, Ypos) :- move_beetle piece("Beetle", Color, Xpos, Ypos).
-move_piece piece("Queen", Color, Xpos, Ypos) :- move_queen piece("Queen", Color, Xpos, Ypos).
-move_piece piece("Grasshopper", Color, Xpos, Ypos) :- move_grasshopper piece("Grasshopper", Color, Xpos, Ypos).
-move_piece piece("Spider", Color, Xpos, Ypos) :- move_spider piece("Spider", Color, Xpos, Ypos).
-move_piece piece("Ant", Color, Xpos, Ypos) :- move_ant piece("Ant", Color, Xpos, Ypos).
-move_piece piece("Ladybug", Color, Xpos, Ypos) :- move_ladybug piece("Ladybug", Color, Xpos, Ypos).
-move_piece piece("Mosquito", Color, Xpos, Ypos) :- move_mosquito piece("Mosquito", Color, Xpos, Ypos).
-move_piece piece("Pillbug", Color, Xpos, Ypos) :- move_pillbug piece("Pillbug", Color, Xpos, Ypos).
+move_mosquito piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
+
+move_pillbug piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    !. % fill move
+
+move_piece piece(Beetle, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_beetle piece(Beetle, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Queen, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_queen piece(Queen, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Grasshopper, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_grasshopper piece(Grasshopper, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Spider, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_spider piece(Spider, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Ant, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_ant piece(Ant, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Ladybug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_ladybug piece(Ladybug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Mosquito, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_mosquito piece(Mosquito, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece piece(Pillbug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
+    move_pillbug piece(Pillbug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
