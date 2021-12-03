@@ -1,4 +1,4 @@
-:- module(piece, [add_piece/1, remove_piece/1]).
+:- module(piece, [add_piece/1, remove_piece/1, get_pieces/1]).
 
 :- op(700, fx, add_piece).
 :- op(700, fx, remove_piece).
