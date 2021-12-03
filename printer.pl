@@ -1,8 +1,9 @@
-:- module(printer, [print_piece/1, print_board/1]).
+:- module(printer, [
+    op(700, fx, print_piece), print_piece/1, 
+    op(700, fx, print_board), print_board/1
+    ]).
 
 :- op(700, yfx, is_represented_by).
-:- op(700, fx, print_piece).
-:- op(700, fx, print_board).
 
 % Type is represented by letter
 Queen is_represented_by 'Q'.

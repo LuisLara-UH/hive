@@ -1,12 +1,13 @@
-:- module(moves, [initiate_piece/1, move_piece/1, to/2, in/2]).
+:- module(moves, [
+    op(700, fx, initiate_piece), initiate_piece/1, 
+    op(700, fx, move_piece), move_piece/1, 
+    op(250, yfx, to), to/2, 
+    op(250, yfx, in), in/2]).
 
 % imports
 :- [piece].
 
 % operators
-:- op(700, fx, initiate_piece).
-
-:- op(700, fx, move_piece).
 :- op(700, fx, move_queen).
 :- op(700, fx, move_beetle).
 :- op(700, fx, move_grasshopper).
@@ -15,9 +16,6 @@
 :- op(700, fx, move_ladybug).
 :- op(700, fx, move_mosquito).
 :- op(700, fx, move_pillbug).
-
-:- op(250, yfx, to).
-:- op(250, yfx, in).
 
 % piece(type, black or white, Piled, Row, Column)
 
