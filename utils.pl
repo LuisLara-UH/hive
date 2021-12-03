@@ -1,7 +1,7 @@
 :- [piece].
 
 same_color_piece_adjacent(Color, Row, Column) :-
-    get_pieces(Pieces),
+    get_pieces Pieces,
     has_adjacent(position(Row, Column), Pieces).
 
 has_adjacent(Piece_Position, [piece(_, _, _, Row, Column)|Y]) :-

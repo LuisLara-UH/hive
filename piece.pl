@@ -1,8 +1,6 @@
-:- module(piece, [add_piece/1, remove_piece/1, get_pieces/1]).
-
-:- op(700, fx, add_piece).
-:- op(700, fx, remove_piece).
-:- op(700, fx, get_pieces).
+:- module(piece, [op(700, fx, add_piece), add_piece/1, 
+    op(700, fx, remove_piece), remove_piece/1, 
+    op(700, fx, get_pieces), get_pieces/1]).
 
 :- dynamic piece/5.
 

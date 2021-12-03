@@ -18,7 +18,7 @@ Pillbug is_represented_by 'P'.
 Black is_represented_by 'B'.
 White is_represented_by 'W'.
 
-print_piece piece(Type, Color, Xpos, Ypos) :- 
+print_piece piece(Type, Color, Piled, Xpos, Ypos) :- 
     Type is_represented_by TypeLetter,
     Color is_represented_by ColorLetter,
     write("["),
@@ -31,6 +31,7 @@ print_piece piece(Type, Color, Xpos, Ypos) :-
     write("]"),
     write("\n").
 
+print_board [].
 print_board [X|Y] :-
     print_piece X,
     print_board Y.
