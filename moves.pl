@@ -1,8 +1,9 @@
 :- module(moves, [
-    op(700, fx, initiate_piece), initiate_piece/1, 
-    op(700, fx, move_piece), move_piece/1, 
-    op(250, yfx, to), to/2, 
-    op(250, yfx, in), in/2]).
+    op(700, fx, initiate_piece), initiate_piece/1,
+    op(700, fx, move_piece), move_piece/1,
+    op(250, yfx, to), to/2,
+    op(250, yfx, in), in/2
+    ]).
 
 % imports
 :- [piece].
