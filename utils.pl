@@ -4,7 +4,7 @@
 :- op(700, fx, same_position).
 :- op(700, fx, same_color).
 :- op(700, fx, found_same_color_piece_adjacent).
-:- op(700, yfx, has_same_color_adjacent).
+:- op(700, fx, has_same_color_adjacent).
 
 
 % piece(type, black or white, Piled, Row, Column)
