@@ -1,9 +1,11 @@
+:- module(utils, [:- op(700, fx, found_same_color_piece_adjacent)]).
+
 :- [piece].
 
 :- op(700, fx, is_adjacent).
 :- op(700, fx, same_position).
 :- op(700, fx, same_color).
-:- op(700, fx, found_same_color_piece_adjacent).
+:- op(700, fx, divides_hive).
 :- op(700, fx, has_same_color_adjacent).
 
 
@@ -30,3 +32,5 @@ is_adjacent position(Q, R, S), Y :-
     same_position(position(Q - 1, R, S + 1), Y).
 
 same_color Color, Color.
+
+divides_hive position(Q, R, S)
