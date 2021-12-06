@@ -2,7 +2,8 @@
     add_piece/1, 
     remove_piece/1, 
     get_pieces/1,
-    findall_pieces/2
+    findall_pieces/2,
+    position_filled/1
     ]).
 
 :- dynamic piece/6.
@@ -18,3 +19,6 @@ get_pieces(Pieces) :- findall(piece(Type, Color, Piled, Q, R, S), piece(Type, Co
 
 findall_pieces(piece(Type, Color, Piled, Q, R, S), Pieces) :- 
     findall(piece(Type, Color, Piled, Q, R, S), piece(Type, Color, Piled, Q, R, S), Pieces).
+
+position_filled(position(Q, R, S)) :-
+    findall_pieces(piece(_, _, _, Q, R, S), [_|_]).
