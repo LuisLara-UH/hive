@@ -24,14 +24,21 @@ move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S
     (
         \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
         (   % Set unpiled piece as piled
-            remove_piece(piece(Type, Color, "false", Next_Q, Next_R, Next_S)),
-            add_piece(piece(Type, Color, "true", Next_Q, Next_R, Next_S))
+            remove_piece(piece(Next_Type, Next_Color, "false", Next_Q, Next_R, Next_S)),
+            add_piece(piece(Next_Type, Next_Color, "true", Next_Q, Next_R, Next_S))
         )
     ),
     add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
 move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "grasshopper". % fill move
+    Type = "grasshopper",
+    \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
+    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
+    position_filled(position(Adj_Q, Adj_R, Adj_S)),
+    Q_dir = Q - Adj_Q,
+    R_dir = R - Adj_R,
+    S_dir = S - Adj_S,
+    is_next_blank_inline(position(Adj_Q, Adj_R, Adj_S), position(Q_dir, R_dir, S_dir), position(Next_Q, Next_R, Next_S)).  
 
 move_spider(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "spider". % fill move
