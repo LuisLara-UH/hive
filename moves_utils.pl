@@ -24,22 +24,22 @@ same_position(position(Q, R, S), position(Q, R, S)).
 
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q, X2 is R - 1, X3 is S + 1,
-    same_position(position(Q, R - 1, S + 1), Y).
+    same_position(position(X1, X2, X3), Y).
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q, X2 is R + 1, X3 is S - 1,
-    same_position(position(Q, R + 1, S - 1), Y).
+    same_position(position(X1, X2, X3), Y).
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q + 1, X2 is R - 1, X3 is S,
-    same_position(position(Q + 1, R - 1, S), Y).
+    same_position(position(X1, X2, X3), Y).
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q + 1, X2 is R, X3 is S - 1,
-    same_position(position(Q + 1, R, S - 1), Y).
+    same_position(position(X1, X2, X3), Y).
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q - 1, X2 is R + 1, X3 is S,
-    same_position(position(Q - 1, R + 1, S), Y).
+    same_position(position(X1, X2, X3), Y).
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q - 1, X2 is R, X3 is S + 1,
-    same_position(position(Q - 1, R, S + 1), Y).
+    same_position(position(X1, X2, X3), Y).
 
 same_color(Color, Color).
 
@@ -167,7 +167,7 @@ is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(
     is_next_blank_inline(position(X1, X2, X3), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)).
     
 
-grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :-
+grasshopper(piece(_, _, _, _,  Q, R, S), position(Next_Q, Next_R, Next_S)) :-
     is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
     position_filled(position(Adj_Q, Adj_R, Adj_S)),
     Q_dir = Q - Adj_Q,

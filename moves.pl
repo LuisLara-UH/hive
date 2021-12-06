@@ -9,7 +9,18 @@
 % piece(type, black or white, Piled, Q, R, S)
 
 % initiate piece
-initiate_piece(piece(Type, Color, _, _,  _, _, _), position(Q, R, S)) :- !. % fill initiate
+initiate_piece(piece(Type, Color, _, _,  _, _, _), position(Q, R, S)) :-
+    \+ position_filled(position(Q, R, S)),
+    (
+        \+ (
+        is_adjacent(position(Q, R, S), position(Adjacent_Q, Adjacent_R, Adjacent_S)),
+        \+ Adjacent_Color is Color,
+        findall_pieces(piece(_,Adjacent_Color, "false",_, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_])
+       )
+    ), !,
+    is_adjacent(position(Q, R, S), position(Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S)),
+    findall_pieces(piece(_,Color, "false",_, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_]),
+    add_piece(piece(Type, Color, "false", 0,  Q, R, S)).
 
 % move piece
 move_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
