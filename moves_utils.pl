@@ -138,3 +138,39 @@ hive_is_divided :-
     length([Piece|Other_Pieces], Pieces_Len),
     length(Connected_Pieces, Connected_Pieces_Len), !,
     \+ Pieces_Len is Connected_Pieces_Len. 
+
+north_dir(Q, R, S) :-
+    Q = 0, R = -1, S = 1.
+
+north_east_dir(Q, R, S) :-
+    Q = 1, R = -1, S = 0.
+
+south_east_dir(Q, R, S) :-
+    Q = 1, R = 0, S = -1.
+
+south_dir(Q, R, S) :-
+    Q = 0, R = 1, S = -1.
+
+south_west_dir(Q, R, S) :-
+    Q = -1, R = 1, S = 0.
+
+north_west_dir(Q, R, S) :-
+    Q = -1, R = 0, S = 1.
+
+is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)) :-
+    
+
+
+    X1 is Q + Q_dir,
+    X2 is R + R_dir,
+    X3 is S + S_dir,
+    .
+
+grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :-
+    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
+    
+    Q_dir = Q - Adj_Q,
+    R_dir = R - Adj_R,
+    S_dir = S - Adj_S,
+    is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(Next_Q, Next_R, Next_S)).
+

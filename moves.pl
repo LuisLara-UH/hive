@@ -31,7 +31,9 @@ move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S
     add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
 move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "grasshopper". % fill move
+    Type = "grasshopper",
+    
+    !.
 
 move_spider(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "spider". % fill move
