@@ -23,7 +23,7 @@
 'Black' is_represented_by 'B'.
 'White' is_represented_by 'W'.
 
-print_piece(piece(Type, Color, Piled, Xpos, Ypos)) :- 
+print_piece(piece(Type, Color, Piled, Piled_Number, Xpos, Ypos)) :- 
     Type is_represented_by TypeLetter,
     Color is_represented_by ColorLetter,
     write("["),

@@ -6,7 +6,7 @@
     position_filled/1
     ]).
 
-:- dynamic piece/6.
+:- dynamic piece/7.
 
 % declares a piece in the database
 add_piece(Piece) :- assert(Piece).
@@ -15,10 +15,10 @@ add_piece(Piece) :- assert(Piece).
 remove_piece(Piece) :- retract(Piece).
 
 % gets the list of pieces declared in the database
-get_pieces(Pieces) :- findall(piece(Type, Color, Piled, Q, R, S), piece(Type, Color, Piled, Q, R, S), Pieces).
+get_pieces(Pieces) :- findall(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(Type, Color, Piled, Pile_Number, Q, R, S), Pieces).
 
-findall_pieces(piece(Type, Color, Piled, Q, R, S), Pieces) :- 
-    findall(piece(Type, Color, Piled, Q, R, S), piece(Type, Color, Piled, Q, R, S), Pieces).
+findall_pieces(piece(Type, Color, Piled, Pile_Number, Q, R, S), Pieces) :- 
+    findall(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(Type, Color, Piled, Pile_Number, Q, R, S), Pieces).
 
 position_filled(position(Q, R, S)) :-
-    findall_pieces(piece(_, _, _, Q, R, S), [_|_]).
+    findall_pieces(piece(_, _, _, _, Q, R, S), [_|_]).
