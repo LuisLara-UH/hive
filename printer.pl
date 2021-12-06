@@ -34,5 +34,5 @@ print_piece(piece(Type, Color, Piled, Xpos, Ypos)) :-
 
 print_board([]).
 print_board([X|Y]) :-
-    print_piece X,
-    print_board Y.
+    print_piece(X),
+    print_board(Y).
