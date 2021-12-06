@@ -30,7 +30,8 @@ move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S
     ),
     add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
-move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+move_grasshopper(piece(_, _, _, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    write("grasshopper"),
     Type = "grasshopper",
     \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
     is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
@@ -90,6 +91,7 @@ move_pillbug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_
 
 
 move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    write("move piece \n"),
     remove_piece(piece(Type, Color, Piled, Q, R, S)), !,
     (
         (
@@ -97,11 +99,14 @@ move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :-
             Piled = "false"
         );
         \+ add_piece(piece(Type, Color, Piled, Q, R, S))
-    ),
+        ),
+    write(Type),
     (
         move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
         move_queen(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        write("enter grass"),
         move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        write("didn't enter grass"),
         move_spider(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
         move_ant(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
         move_ladybug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
