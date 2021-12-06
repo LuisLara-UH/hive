@@ -2,7 +2,8 @@
     found_same_color_piece_adjacent/2,
     hive_is_divided/0,
     is_adjacent/2,
-    is_next_blank_inline/3
+    is_next_blank_inline/3,
+    enemy_adjacent/1
     ]).
 
 :- [piece].
@@ -42,6 +43,14 @@ is_adjacent(position(Q, R, S), Y) :-
     same_position(position(X1, X2, X3), Y).
 
 same_color(Color, Color).
+
+enemy_adjacent(piece(_, Color, _, _, Q, R, S)) :-
+    (
+      (Color = "white", Adjacent_Color = "black");  
+      (Color = "black", Adjacent_Color = "white")
+    ),
+    is_adjacent(position(Q, R, S), position(Adjacent_Q, Adjacent_R, Adjacent_S)),
+    findall_pieces(piece(_, Adjacent_Color, "false", _, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_]).
 
 
 % north

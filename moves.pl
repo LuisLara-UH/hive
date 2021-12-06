@@ -11,15 +11,12 @@
 % initiate piece
 initiate_piece(piece(Type, Color, _, _,  _, _, _), position(Q, R, S)) :-
     \+ position_filled(position(Q, R, S)),
-    (
-        \+ (
-        is_adjacent(position(Q, R, S), position(Adjacent_Q, Adjacent_R, Adjacent_S)),
-        \+ Adjacent_Color is Color,
-        findall_pieces(piece(_,Adjacent_Color, "false",_, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_])
-       )
-    ), !,
+    write("Position not filled.\n"),
+    \+ enemy_adjacent(piece(_, Color, _, _, Q, R, S)), 
+    write("No enemy piece adjacent.\n"), !,
     is_adjacent(position(Q, R, S), position(Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S)),
-    findall_pieces(piece(_,Color, "false",_, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_]),
+    findall_pieces(piece(_,Color, "false",_, Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S), [_|_]),
+    write("Found friend piece adjacent.\n"), !,
     add_piece(piece(Type, Color, "false", 0,  Q, R, S)).
 
 % move piece
@@ -50,7 +47,7 @@ move_beetle(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Ne
     remove_piece(piece(Piece_Type, Piece_Color,"true", Last_Piled_Number, Q, R, S)),
     add_piece(piece(Piece_Type, Piece_Color, "false", Last_Piled_Number, Q, R, S)).
 
-move_grasshopper(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+move_grasshopper(piece(Type, _, _, _, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "grasshopper",
     \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
     is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
@@ -76,7 +73,7 @@ move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, N
     \+ position_filled(position(blank_space_Q, blank_space_R, blank_space_S)),
     add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)). % fill move
 
-move_mosquito(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+move_mosquito(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "mosquito",
     (
         (
