@@ -15,14 +15,14 @@ initiate_piece(piece(Type, Color, _,  _, _, _), position(Q, R, S)) :- !. % fill 
 move_queen(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
     Type = "queen",
     is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
-    \+ findall_pieces(piece(_, _, _, Next_Q, Next_R, Next_S), [_|_]), % no piece in the position
+    \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
 move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
     Type = "beetle",
     is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     (
-        \+ findall_pieces(piece(_, _, _, Next_Q, Next_R, Next_S), [_|_]); % no piece in the position
+        \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
         (   % Set unpiled piece as piled
             remove_piece(piece(Type, Color, "false", Next_Q, Next_R, Next_S)),
             add_piece(piece(Type, Color, "true", Next_Q, Next_R, Next_S))
@@ -42,13 +42,46 @@ move_ant(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) 
     Type = "ant". % fill move
 
 move_ladybug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "ladybug". % fill move
+    Type = "ladybug",
+    is_adjacent(position(Q, R, S), position(first_piece_Q, first_piece_R, first_piece_S)),
+    position_filled(position(first_piece_Q, first_piece_R, first_piece_S)),
+    is_adjacent(position(first_piece_Q, first_piece_R, first_piece_S), position(second_piece_Q, second_piece_R, second_piece_S)),
+    position_filled(position(second_piece_Q, second_piece_R, second_piece_S)),
+    is_adjacent(position(second_piece_Q, second_piece_R, second_piece_S), position(blank_space_Q, blank_space_R, blank_space_S)),
+    \+ position_filled(position(blank_space_Q, blank_space_R, blank_space_S)),
+    add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)). % fill move
 
 move_mosquito(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "mosquito". % fill move
+    Type = "mosquito",
+    (
+        (
+            (
+                position_filled(position(Q, R, S)),
+                move_beetle(piece("beetle", Color, "false", Q, R, S), position(Next_Q, Next_R, Next_S))
+            );
+            (
+                \+ position_filled(position(Q, R, S)),  
+                is_adjacent(position(Q, R, S), position(adjacent_piece_Q, adjacent_piece_R, adjacent_piece_S)),
+                findall_pieces(piece(Adjacent_Type, _, "false", adjacent_piece_Q, adjacent_piece_R, adjacent_piece_S), [adjacent_piece|_]),
+                \+ Adjacent_Type = "mosquito",
+                (
+                    (
+                        assert(piece(Adjacent_Type, Color, "false", Q, R, S)),
+                        move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))
+                    );
+                    \+ retract(piece(Adjacent_Type, Color, "false", Q, R, S))    
+                )
+            )
+        ),
+        retract(piece(_, _, "false", Next_Q, Next_R, Next_S)),
+        assert(piece("mosquito", Color, "false", Next_Q, Next_R, Next_S))   
+    ).
 
 move_pillbug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "pillbug". % fill move
+    Type = "pillbug",
+    is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
+    \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
+    add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)). % fill move
 
 
 move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
