@@ -1,74 +1,71 @@
 :- module(moves, [
-    op(700, fx, initiate_piece), initiate_piece/1,
-    op(700, fx, move_piece), move_piece/1,
-    op(250, yfx, to), to/2,
-    op(250, yfx, in), in/2
-    ]).
+    initiate_piece/2, 
+    move_piece/2]).
 
 % imports
 :- [piece].
+:- [moves_utils].
 
-% operators
-:- op(700, fx, move_queen).
-:- op(700, fx, move_beetle).
-:- op(700, fx, move_grasshopper).
-:- op(700, fx, move_spider).
-:- op(700, fx, move_ant).
-:- op(700, fx, move_ladybug).
-:- op(700, fx, move_mosquito).
-:- op(700, fx, move_pillbug).
-
-% piece(type, black or white, Piled, Row, Column)
+% piece(type, black or white, Piled, Q, R, S)
 
 % initiate piece
-initiate_piece piece(Type, Color, _,  _, _) in position(Row, Column) :- !. % fill initiate
+initiate_piece(piece(Type, Color, _,  _, _, _), position(Q, R, S)) :- !. % fill initiate
 
 % move piece
-move_queen piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column) :- 
-    !. % fill move
+move_queen(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
+    Type = "queen",
+    is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
+    \+ findall_pieces(piece(_, _, _, Next_Q, Next_R, Next_S), [_|_]), % no piece in the position
+    add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
-move_beetle piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
+    Type = "beetle",
+    is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
+    (
+        \+ findall_pieces(piece(_, _, _, Next_Q, Next_R, Next_S), [_|_]); % no piece in the position
+        (   % Set unpiled piece as piled
+            remove_piece(piece(Type, Color, "false", Next_Q, Next_R, Next_S)),
+            add_piece(piece(Type, Color, "true", Next_Q, Next_R, Next_S))
+        )
+    ),
+    add_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)).
 
-move_grasshopper piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "grasshopper". % fill move
 
-move_spider piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_spider(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "spider". % fill move
 
-move_ant piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_ant(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "ant". % fill move
 
-move_ladybug piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_ladybug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "ladybug". % fill move
 
-move_mosquito piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_mosquito(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "mosquito". % fill move
 
-move_pillbug piece(_, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    !. % fill move
+move_pillbug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    Type = "pillbug". % fill move
 
 
-move_piece piece(Beetle, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_beetle piece(Beetle, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Queen, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_queen piece(Queen, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Grasshopper, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_grasshopper piece(Grasshopper, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Spider, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_spider piece(Spider, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Ant, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_ant piece(Ant, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Ladybug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_ladybug piece(Ladybug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Mosquito, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_mosquito piece(Mosquito, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
-
-move_piece piece(Pillbug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column)  :- 
-    move_pillbug piece(Pillbug, Color, Piled,  Row, Column) to position(Next_Row, Next_Column).
+move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
+    remove_piece(piece(Type, Color, Piled, Q, R, S)), !,
+    (
+        (
+            \+ hive_is_divided,
+            Piled = "false"
+        );
+        \+ add_piece(piece(Type, Color, Piled, Q, R, S))
+    ),
+    (
+        move_beetle(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_queen(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_grasshopper(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_spider(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_ant(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_ladybug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_mosquito(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        move_pillbug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
+        \+ add_piece(piece(Type, Color, Piled, Q, R, S))
+    ).

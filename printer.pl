@@ -1,8 +1,8 @@
 :- module(printer, [
-    op(700, fx, print_piece), print_piece/1,
-    op(700, fx, print_board), print_board/1, 
-    op(700, fx, print_move), print_move/1,
-    op(700, fx, print_initiate), print_initiate/1,
+    print_piece/1,
+    print_board/1, 
+    print_move/1,
+    print_initiate/1,
     print_exit/0,
     print_game_instructions/0
     ]).
@@ -23,7 +23,7 @@
 'Black' is_represented_by 'B'.
 'White' is_represented_by 'W'.
 
-print_piece piece(Type, Color, _, Xpos, Ypos) :- 
+print_piece(piece(Type, Color, Piled, Xpos, Ypos)) :- 
     Type is_represented_by TypeLetter,
     Color is_represented_by ColorLetter,
     write("["),
@@ -37,16 +37,11 @@ print_piece piece(Type, Color, _, Xpos, Ypos) :-
     write("]"),
     write("\n").
 
-print_board [].
-print_board [X|Y] :-
-    print_piece X,
-    print_board Y.
-
 print_exit :-
     write("Exiting game..."),
     write("\n").
 
-print_move [position(X1, X2, X3), position(Y1, Y2, Y3)] :-
+print_move([position(X1, X2, X3), position(Y1, Y2, Y3)]) :-
     write("Move piece from position ["),
     write(X1),
     write(","),
@@ -62,7 +57,7 @@ print_move [position(X1, X2, X3), position(Y1, Y2, Y3)] :-
     write("]"),
     write("\n").
 
-print_initiate [Type, position(X1, X2, X3)] :-
+print_initiate([Type, position(X1, X2, X3)]) :-
     write("Initiate "),
     write(Type),
     write(" at position ["),
@@ -89,3 +84,8 @@ print_game_instructions :-
     write("\n"),
     write(" ENJOY THE GAME (^.^)o[~] !"),
     write("\n").
+
+print_board([]).
+print_board([X|Y]) :-
+    print_piece(X),
+    print_board(Y).
