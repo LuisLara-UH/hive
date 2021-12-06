@@ -45,46 +45,46 @@ same_color(Color, Color).
 
 
 % north
-n_neig(piece(_, _, _, Q, R, S), X) :- 
+n_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q,
     X2 is R - 1,
     X3 is S + 1,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 % north east
-ne_neig(piece(_, _, _, Q, R, S), X) :- 
+ne_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q + 1,
     X2 is R - 1,
     X3 is S,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 % south east
-se_neig(piece(_, _, _, Q, R, S), X) :- 
+se_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q + 1,
     X2 is R,
     X3 is S - 1,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 % south
-s_neig(piece(_, _, _, Q, R, S), X) :- 
+s_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q,
     X2 is R + 1,
     X3 is S - 1,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 % south west
-sw_neig(piece(_, _, _, Q, R, S), X) :- 
+sw_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q - 1,
     X2 is R + 1,
     X3 is S,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 % north west
-nw_neig(piece(_, _, _, Q, R, S), X) :- 
+nw_neig(piece(_, _, _, _, Q, R, S), X) :- 
     X1 is Q - 1,
     X2 is R,
     X3 is S + 1,
-    findall_pieces(piece(_, _, _, X1, X2, X3), [X|_]).
+    findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
 
 find_pieces_connected([], Pieces_Found, Connected_Pieces) :- append([], Pieces_Found, Connected_Pieces).
