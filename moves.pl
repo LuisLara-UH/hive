@@ -101,4 +101,8 @@ move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :-
         move_mosquito(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
         move_pillbug(piece(Type, Color, Piled,  Q, R, S), position(Next_Q, Next_R, Next_S));
         \+ add_piece(piece(Type, Color, Piled, Q, R, S))
-    ).
+    ),
+    hive_is_divided,
+    remove_piece(piece(Type, Color, Piled, Next_Q, Next_R, Next_S)),
+    add_piece(piece(Type, Color, Piled, Q, R, S)), !,
+    fail.
