@@ -135,8 +135,6 @@ find_pieces_connected([Piece|Non_Visited_Pieces], Pieces_Found, Connected_Pieces
 hive_is_divided :- 
     get_pieces([Piece|Other_Pieces]),
     find_pieces_connected([Piece], [Piece], Connected_Pieces),
-    write(Connected_Pieces),
-    write("Nadia Maria \n"),
     length([Piece|Other_Pieces], Pieces_Len),
     length(Connected_Pieces, Connected_Pieces_Len), !,
     \+ Pieces_Len is Connected_Pieces_Len. 
