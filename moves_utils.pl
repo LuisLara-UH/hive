@@ -3,12 +3,8 @@
     hive_is_divided/0,
     is_adjacent/2,
     is_next_blank_inline/3,
-<<<<<<< HEAD
-    move_like_queen_3_times/2
-    surround_hive_bfs/2
-=======
+    surround_hive_bfs/2,
     enemy_adjacent/1
->>>>>>> 76e4a029175c4ac7519fe40dc9c3c02d73768b0d
     ]).
 
 :- [piece].
@@ -106,12 +102,12 @@ p_neig(piece(_, _, _, _, Q, R, S), X) :-
     member(X, Pieces).
 
 get_adjacent(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)) :- 
-    n_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
-    ne_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
-    se_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
-    s_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
-    sw_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
-    nw_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj)).
+    n_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    ne_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    se_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    s_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    sw_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    nw_neig(piece(_, _, _, _, Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj)).
 
 
 find_pieces_connected([], Pieces_Found, Connected_Pieces) :- append([], Pieces_Found, Connected_Pieces).
@@ -170,11 +166,6 @@ find_pieces_connected([Piece|Non_Visited_Pieces], Pieces_Found, Connected_Pieces
 hive_is_divided :- 
     get_pieces([Piece|Other_Pieces]),
     find_pieces_connected([Piece], [Piece], Connected_Pieces),
-    write("Pieces: "),
-    write([Piece|Other_Pieces]),
-    write("\nPieces Connected:"),
-    write(Connected_Pieces),
-    write("\n"),
     length([Piece|Other_Pieces], Pieces_Len),
     length(Connected_Pieces, Connected_Pieces_Len), !,
     \+ Pieces_Len is Connected_Pieces_Len. 
@@ -200,81 +191,77 @@ north_west_dir(Q, R, S) :-
 % grasshopper: searches for the next blank position in a direction
 is_next_blank_inline(Y, _, Y).
 is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)) :-
-    write("blank inline"),
     position_filled(position(Q, R, S)),
     X1 is Q - Q_dir,
     X2 is R - R_dir,
     X3 is S - S_dir,
     is_next_blank_inline(position(X1, X2, X3), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)).
 
-<<<<<<< HEAD
-=======
-grasshopper(piece(_, _, _, _,  Q, R, S), position(Next_Q, Next_R, Next_S)) :-
-    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
-    position_filled(position(Adj_Q, Adj_R, Adj_S)),
-    Q_dir = Q - Adj_Q,
-    R_dir = R - Adj_R,
-    S_dir = S - Adj_S,
-    is_next_blank_inline(position(Adj_Q, Adj_R, Adj_S), position(Q_dir, R_dir, S_dir), position(Next_Q, Next_R, Next_S)).
->>>>>>> 76e4a029175c4ac7519fe40dc9c3c02d73768b0d
 
-is_adjacent_to_filled_piece(piece(_, _, _, _, Q, R, S)) :-
+is_valid_blank_position(position(Q, R, S)) :-
+    \+ position_filled(position(Q, R, S)),
     get_adjacent(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)),
     position_filled(position(Q_Adj, R_Adj, S_Adj)).
 
 
-find_blank_path([final_pos(Q, R, S), _], _, final_pos(Q, R, S)).
-find_blank_path([Piece|Non_Visited_Pieces], Pieces_Found, final_pos(Q, R, S)) :-
+find_blank_path([position(Q, R, S)|_], _, position(Q, R, S)).
+find_blank_path([position(Q, R, S) | Non_Visited_Positions], Positions_Found, position(Final_Q, Final_R, Final_S)) :-
     (
-        n_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S))        
+        North_Space_Q is Q, North_Space_R is R - 1, North_Space_S is S + 1, 
+        North_Position = position(North_Space_Q, North_Space_R, North_Space_S),
+        \+ member(North_Position, Positions_Found),
+        is_valid_blank_position(North_Position),
+        append(Positions_Found, [North_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [North_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S))        
     );
     (
-        ne_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+        North_East_Space_Q is Q + 1, North_East_Space_R is R - 1, North_East_Space_S is S, 
+        North_East_Position = position(North_East_Space_Q, North_East_Space_R, North_East_Space_S),
+        \+ member(North_East_Position, Positions_Found),
+        is_valid_blank_position(North_East_Position),
+        append(Positions_Found, [North_East_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [North_East_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S))  
     );
     (
-        se_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+        South_East_Space_Q is Q + 1, South_East_Space_R is R, South_East_Space_S is S - 1, 
+        South_East_Position = position(South_East_Space_Q, South_East_Space_R, South_East_Space_S),
+        \+ member(South_East_Position, Positions_Found),
+        is_valid_blank_position(South_East_Position),
+        append(Positions_Found, [South_East_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [South_East_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S))  
     );
     (
-        s_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+        South_Space_Q is Q, South_Space_R is R + 1, South_Space_S is S - 1, 
+        South_Position = position(South_Space_Q, South_Space_R, South_Space_S),
+        \+ member(South_Position, Positions_Found),
+        is_valid_blank_position(South_Position),
+        append(Positions_Found, [South_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [South_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S)) 
     );
     (
-        sw_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S))
+        South_West_Space_Q is Q - 1, South_West_Space_R is R + 1, South_West_Space_S is S, 
+        South_West_Position = position(South_West_Space_Q, South_West_Space_R, South_West_Space_S),
+        \+ member(South_West_Position, Positions_Found),
+        is_valid_blank_position(South_West_Position),
+        append(Positions_Found, [South_West_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [South_West_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S)) 
     );
     (
-        nw_neig(Piece, Next_Piece),
-        \+ member(Next_Piece, Pieces_Found),
-        is_adjacent_to_filled_piece(Next_Piece),
-        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
-        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
-        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+        North_West_Space_Q is Q - 1, North_West_Space_R is R, North_West_Space_S is S + 1, 
+        North_West_Position = position(North_West_Space_Q, North_West_Space_R, North_West_Space_S),
+        \+ member(North_West_Position, Positions_Found),
+        is_valid_blank_position(North_West_Position),
+        append(Positions_Found, [North_West_Position], New_Positions_Found),
+        append(Non_Visited_Positions, [North_West_Position], New_Non_Visited_Positions),
+        find_blank_path([position(Q, R, S) | New_Non_Visited_Positions], New_Positions_Found, position(Final_Q, Final_R, Final_S)) 
     );
-    find_blank_path(Non_Visited_Pieces, Pieces_Found, final_pos(Q, R, S)).
+    find_blank_path(Non_Visited_Positions, Positions_Found, position(Final_Q, Final_R, Final_S)).
 
 
-surround_hive_bfs(current_pos(Q, R, S), final_pos(Q, R, S)) :-
-    find_blank_path([piece(_, _, _, _, Q, R, S)], [piece(_, _, _, _, Q, R, S)], final_pos(Q, R, S)).
+surround_hive_bfs(position(Q, R, S), position(Q_Final, R_Final, S_Final)) :-
+    find_blank_path([position(Q, R, S)], [position(Q, R, S)], position(Q_Final, R_Final, S_Final)).

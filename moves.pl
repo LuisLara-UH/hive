@@ -74,7 +74,7 @@ move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Ne
 
 move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "ant",
-    \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
+    \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     surround_hive_bfs(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)).
 
