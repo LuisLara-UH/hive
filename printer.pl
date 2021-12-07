@@ -4,26 +4,29 @@
     print_move/1,
     print_initiate/1,
     print_exit/0,
-    print_game_instructions/0
+    print_game_instructions/0,
+    print_game_state/0
     ]).
 
 :- op(700, yfx, is_represented_by).
 
+:- [piece].
+
 % Type is represented by letter
-'Queen' is_represented_by 'Q'.
-'Beetle' is_represented_by 'B'.
-'Grasshopper' is_represented_by 'G'.
-'Spider' is_represented_by 'S'.
-'Ant' is_represented_by 'A'.
-'Ladybug' is_represented_by 'L'.
-'Mosquito' is_represented_by 'M'.
-'Pillbug' is_represented_by 'P'.
+"queen" is_represented_by "Q".
+"beetle" is_represented_by "B".
+"grasshopper" is_represented_by "G".
+"spider" is_represented_by "S".
+"ant" is_represented_by "A".
+"ladybug" is_represented_by "L".
+"mosquito" is_represented_by "M".
+"pillbug" is_represented_by "P".
 
 % Color is represented by letter
-'Black' is_represented_by 'B'.
-'White' is_represented_by 'W'.
+"black" is_represented_by "B".
+"white" is_represented_by "W".
 
-print_piece(piece(Type, Color, Piled, Piled_Number, Xpos, Ypos)) :- 
+print_piece(piece(Type, Color, Piled, Piled_Number, Q, R, S)) :- 
     Type is_represented_by TypeLetter,
     Color is_represented_by ColorLetter,
     write("["),
@@ -31,9 +34,11 @@ print_piece(piece(Type, Color, Piled, Piled_Number, Xpos, Ypos)) :-
     write(" "),
     write(TypeLetter),
     write(" "),
-    write(Xpos),
+    write(Q),
     write(" "),
-    write(Ypos),
+    write(R),
+    write(" "),
+    write(S),
     write("]"),
     write("\n").
 
@@ -54,7 +59,7 @@ print_move([position(X1, X2, X3), position(Y1, Y2, Y3)]) :-
     write(Y2),
     write(","),
     write(Y3),
-    write("]"),
+    write("]..."),
     write("\n").
 
 print_initiate([Type, position(X1, X2, X3)]) :-
@@ -66,7 +71,7 @@ print_initiate([Type, position(X1, X2, X3)]) :-
     write(X2),
     write(","),
     write(X3),
-    write("]"),
+    write("]..."),
     write("\n").
 
 print_game_instructions :-
@@ -89,3 +94,8 @@ print_board([]).
 print_board([X|Y]) :-
     print_piece(X),
     print_board(Y).
+
+print_game_state :-
+    write("Pieces:\n"),
+    get_pieces(Pieces),
+    print_board(Pieces).
