@@ -2,7 +2,8 @@
     found_same_color_piece_adjacent/2,
     hive_is_divided/0,
     is_adjacent/2,
-    is_next_blank_inline/3
+    is_next_blank_inline/3,
+    move_like_queen_3_times/2
     ]).
 
 :- [piece].
@@ -86,6 +87,40 @@ nw_neig(piece(_, _, _, _, Q, R, S), X) :-
     X3 is S + 1,
     findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
+get_adjacents(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)) :- 
+    n_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    ne_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    se_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    s_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    sw_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
+    nw_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj)).
+
+move_like_queen_3_times(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q_New, R_New, S_New)) :-
+    % First step
+    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(_, _, _, _, Q_Adj1, R_Adj1, S_Adj1)),
+    \+ position_filled(position(Q_Adj1, R_Adj1, S_Adj1)),
+
+    % Second step
+    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj1, R_Adj1, S_Adj1), piece(_, _, _, _, Q_Adj2, R_Adj2, S_Adj2)),
+    \+ position_filled(position(Q_Adj2, R_Adj2, S_Adj2)),
+
+    % Third step
+    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj2, R_Adj2, S_Adj2), piece(_, _, _, _, Q_Adj3, R_Adj3, S_Adj3)),
+    \+ position_filled(position(Q_Adj3, R_Adj3, S_Adj3)),
+
+    % Check if it's searched position
+    Q_New = Q_Adj3, R_New = R_Adj3, S_New = S_Adj3,
+
+    % Check if final position has a filled adjacent
+    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj3, R_Adj3, S_Adj3), piece(_, _, _, _, Q_Adj4, R_Adj4, S_Adj4)),
+    position_filled(position(Q_Adj4, R_Adj4, S_Adj4)).
+
+
+move_like_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q, R, S)).
+move_like_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q_New, R_New, S_New)) :- 
+    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(_, _, _, _, Q_Adj1, R_Adj1, S_Adj1)),
+    move_like_queen_3_times(piece("queen", Color, Piled, Pile_Number, Q, R, S), position(Q_Adj1, R_Adj1, S_Adj1)),
+
 
 find_pieces_connected([], Pieces_Found, Connected_Pieces) :- append([], Pieces_Found, Connected_Pieces).
 find_pieces_connected([Piece|Non_Visited_Pieces], Pieces_Found, Connected_Pieces) :-
@@ -158,6 +193,7 @@ south_west_dir(Q, R, S) :-
 north_west_dir(Q, R, S) :-
     Q = -1, R = 0, S = 1.
 
+% grasshopper: searches for the next blank position in a direction
 is_next_blank_inline(Y, _, Y).
 is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)) :-
     write("blank inline"),
@@ -166,13 +202,4 @@ is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(
     X2 is R - R_dir,
     X3 is S - S_dir,
     is_next_blank_inline(position(X1, X2, X3), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)).
-    
-
-grasshopper(piece(_, _, _,  Q, R, S), position(Next_Q, Next_R, Next_S)) :-
-    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
-    position_filled(position(Adj_Q, Adj_R, Adj_S)),
-    Q_dir = Q - Adj_Q,
-    R_dir = R - Adj_R,
-    S_dir = S - Adj_S,
-    is_next_blank_inline(position(Adj_Q, Adj_R, Adj_S), position(Q_dir, R_dir, S_dir), position(Next_Q, Next_R, Next_S)).
 
