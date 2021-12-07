@@ -50,10 +50,15 @@ move_grasshopper(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_
     is_next_blank_inline(position(Adj_Q, Adj_R, Adj_S), position(Q_dir, R_dir, S_dir), position(Next_Q, Next_R, Next_S)).  
 
 move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "spider". % fill move
+    Type = "spider",
+    move_like_queen_3_times(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q_New, R_New, S_New)).
 
 move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    Type = "ant". % fill move
+    Type = "ant",
+    \+ position_filled(position(Next_Q, Next_R, Next_S)); % no piece in the position
+    surround_hive_bfs(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
+    add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)).
+
 
 move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "ladybug",

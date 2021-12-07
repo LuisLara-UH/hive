@@ -4,6 +4,7 @@
     is_adjacent/2,
     is_next_blank_inline/3,
     move_like_queen_3_times/2
+    surround_hive_bfs/2
     ]).
 
 :- [piece].
@@ -87,7 +88,7 @@ nw_neig(piece(_, _, _, _, Q, R, S), X) :-
     X3 is S + 1,
     findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
-get_adjacents(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)) :- 
+get_adjacent(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)) :- 
     n_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
     ne_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
     se_neig(position(Q, R, S), piece(_, _, _, _, Q_Adj, R_Adj, S_Adj));
@@ -97,29 +98,23 @@ get_adjacents(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)) :-
 
 move_like_queen_3_times(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q_New, R_New, S_New)) :-
     % First step
-    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(_, _, _, _, Q_Adj1, R_Adj1, S_Adj1)),
+    get_adjacent(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(_, _, _, _, Q_Adj1, R_Adj1, S_Adj1)),
     \+ position_filled(position(Q_Adj1, R_Adj1, S_Adj1)),
 
     % Second step
-    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj1, R_Adj1, S_Adj1), piece(_, _, _, _, Q_Adj2, R_Adj2, S_Adj2)),
+    get_adjacent(piece(Type, Color, Piled, Pile_Number, Q_Adj1, R_Adj1, S_Adj1), piece(_, _, _, _, Q_Adj2, R_Adj2, S_Adj2)),
     \+ position_filled(position(Q_Adj2, R_Adj2, S_Adj2)),
 
     % Third step
-    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj2, R_Adj2, S_Adj2), piece(_, _, _, _, Q_Adj3, R_Adj3, S_Adj3)),
+    get_adjacent(piece(Type, Color, Piled, Pile_Number, Q_Adj2, R_Adj2, S_Adj2), piece(_, _, _, _, Q_Adj3, R_Adj3, S_Adj3)),
     \+ position_filled(position(Q_Adj3, R_Adj3, S_Adj3)),
 
     % Check if it's searched position
     Q_New = Q_Adj3, R_New = R_Adj3, S_New = S_Adj3,
 
     % Check if final position has a filled adjacent
-    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q_Adj3, R_Adj3, S_Adj3), piece(_, _, _, _, Q_Adj4, R_Adj4, S_Adj4)),
+    get_adjacent(piece(Type, Color, Piled, Pile_Number, Q_Adj3, R_Adj3, S_Adj3), piece(_, _, _, _, Q_Adj4, R_Adj4, S_Adj4)),
     position_filled(position(Q_Adj4, R_Adj4, S_Adj4)).
-
-
-move_like_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q, R, S)).
-move_like_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Q_New, R_New, S_New)) :- 
-    get_adjacents(piece(Type, Color, Piled, Pile_Number, Q, R, S), piece(_, _, _, _, Q_Adj1, R_Adj1, S_Adj1)),
-    move_like_queen_3_times(piece("queen", Color, Piled, Pile_Number, Q, R, S), position(Q_Adj1, R_Adj1, S_Adj1)),
 
 
 find_pieces_connected([], Pieces_Found, Connected_Pieces) :- append([], Pieces_Found, Connected_Pieces).
@@ -203,3 +198,64 @@ is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(
     X3 is S - S_dir,
     is_next_blank_inline(position(X1, X2, X3), position(Q_dir, R_dir, S_dir), position(New_Q, New_R, New_S)).
 
+
+is_adjacent_to_filled_piece(piece(_, _, _, _, Q, R, S)) :-
+    get_adjacent(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)),
+    position_filled(position(Q_Adj, R_Adj, S_Adj)).
+
+
+find_blank_path([final_pos(Q, R, S), _], _, final_pos(Q, R, S)).
+find_blank_path([Piece|Non_Visited_Pieces], Pieces_Found, final_pos(Q, R, S)) :-
+    (
+        n_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S))        
+    );
+    (
+        ne_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+    );
+    (
+        se_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+    );
+    (
+        s_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+    );
+    (
+        sw_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S))
+    );
+    (
+        nw_neig(Piece, Next_Piece),
+        \+ member(Next_Piece, Pieces_Found),
+        is_adjacent_to_filled_piece(Next_Piece),
+        append(Pieces_Found, [Next_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Next_Piece], New_Non_Visited_Pieces),
+        find_blank_path([Piece|New_Non_Visited_Pieces], New_Pieces_Found, final_pos(Q, R, S)) 
+    );
+    find_blank_path(Non_Visited_Pieces, Pieces_Found, final_pos(Q, R, S)).
+
+
+surround_hive_bfs(current_pos(Q, R, S), final_pos(Q, R, S)) :-
+    find_blank_path([piece(_, _, _, _, Q, R, S)], [piece(_, _, _, _, Q, R, S)], final_pos(Q, R, S)).
