@@ -4,7 +4,9 @@
     is_adjacent/2,
     is_next_blank_inline/3,
     surround_hive_bfs/2,
-    enemy_adjacent/1
+    enemy_adjacent/1,
+    is_valid_blank_position/1,
+    same_position/2
     ]).
 
 :- [piece].
