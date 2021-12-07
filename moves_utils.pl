@@ -95,6 +95,10 @@ nw_neig(piece(_, _, _, _, Q, R, S), X) :-
     X3 is S + 1,
     findall_pieces(piece(_, _, _, _, X1, X2, X3), [X|_]).
 
+% same position(Piled)
+p_neig(piece(_, _, _, _, Q, R, S), X) :-
+    findall_pieces(piece(_, _, _, _, Q, R, S), Pieces),
+    member(X, Pieces).
 
 find_pieces_connected([], Pieces_Found, Connected_Pieces) :- append([], Pieces_Found, Connected_Pieces).
 find_pieces_connected([Piece|Non_Visited_Pieces], Pieces_Found, Connected_Pieces) :-
@@ -140,11 +144,23 @@ find_pieces_connected([Piece|Non_Visited_Pieces], Pieces_Found, Connected_Pieces
         append(Non_Visited_Pieces, [North_West_Piece], New_Non_Visited_Pieces),
         find_pieces_connected([Piece|New_Non_Visited_Pieces], New_Pieces_Found, Connected_Pieces)
     );
+    (
+        p_neig(Piece, Piled_Piece),
+        \+ member(Piled_Piece, Pieces_Found),
+        append(Pieces_Found, [Piled_Piece], New_Pieces_Found),
+        append(Non_Visited_Pieces, [Piled_Piece], New_Non_Visited_Pieces),
+        find_pieces_connected([Piece|New_Non_Visited_Pieces], New_Pieces_Found, Connected_Pieces)
+    );
     find_pieces_connected(Non_Visited_Pieces, Pieces_Found, Connected_Pieces).
 
 hive_is_divided :- 
     get_pieces([Piece|Other_Pieces]),
     find_pieces_connected([Piece], [Piece], Connected_Pieces),
+    write("Pieces: "),
+    write([Piece|Other_Pieces]),
+    write("\nPieces Connected:"),
+    write(Connected_Pieces),
+    write("\n"),
     length([Piece|Other_Pieces], Pieces_Len),
     length(Connected_Pieces, Connected_Pieces_Len), !,
     \+ Pieces_Len is Connected_Pieces_Len. 

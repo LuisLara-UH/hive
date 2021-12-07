@@ -6,14 +6,10 @@
 
 execute_action Action :- 
     (
-        (
-            move Action;
-            initiate Action;
-            instructions Action;
-            \+ write("Action not permited.\n")
-        ),
-        fail
-    );
+        move Action;
+        initiate Action;
+        instructions Action
+    ),
     exit Action.
 
 execute_game :-
