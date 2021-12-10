@@ -6,16 +6,33 @@
     surround_hive_bfs/2,
     enemy_adjacent/1,
     is_valid_blank_position/1,
+    can_init_piece/1,
     same_position/2
     ]).
 
 :- [piece].
 
-% piece(type, black or white, Piled, Q, R, S)
+% piece(type, black or white, Piled, Pile_Number, Q, R, S)
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "queen", count_pieces(piece(Type, Color,_,_,_,_,_), Queens), Queens < 1.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "grasshopper", count_pieces(piece(Type, Color,_,_,_,_,_), Grasshoppers), Grasshoppers < 3.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "beetle", count_pieces(piece(Type, Color,_,_,_,_,_), Beetles), Beetles < 2.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "spider", count_pieces(piece(Type, Color,_,_,_,_,_), Spiders), Spiders < 2.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "ant", count_pieces(piece(Type, Color,_,_,_,_,_), Ants), Ants < 3.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "mosquito", count_pieces(piece(Type, Color,_,_,_,_,_), Mosquitos), Mosquitos < 1.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "ladybug", count_pieces(piece(Type, Color,_,_,_,_,_), Ladybugs), Ladybugs < 1.
+can_init_piece(piece(Type, Color, _,_,_,_,_)) :-
+    Type = "pillbug", count_pieces(piece(Type, Color,_,_,_,_,_), Pillbugs), Pillbugs < 1.
+
 found_same_color_piece_adjacent(Color, Position) :-
     get_pieces(Pieces),
     has_same_color_adjacent(Color, Position, Pieces).
-
 
 has_same_color_adjacent(Color1, Piece_Position, [piece(_, Color2, _, Q, R, S)|Y]) :-
     is_adjacent(Piece_Position, position(Q, R, S)), 
@@ -201,9 +218,9 @@ is_next_blank_inline(position(Q, R, S), position(Q_dir, R_dir, S_dir), position(
 
 
 is_valid_blank_position(position(Q, R, S)) :-
-    \+ position_filled(position(Q, R, S)),
-    get_adjacent(position(Q, R, S), position(Q_Adj, R_Adj, S_Adj)),
-    position_filled(position(Q_Adj, R_Adj, S_Adj)).
+    position_filled(position(Q_Adj, R_Adj, S_Adj)),
+    is_adjacent(position(Q_Adj, R_Adj, S_Adj), position(Q, R, S)),
+    \+ position_filled(position(Q, R, S)).
 
 
 find_blank_path([position(Q, R, S)|_], _, position(Q, R, S)).

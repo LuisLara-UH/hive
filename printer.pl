@@ -5,7 +5,8 @@
     print_initiate/1,
     print_exit/0,
     print_game_instructions/0,
-    print_game_state/0
+    print_game_state/0,
+    print_positions/1
     ]).
 
 :- op(700, yfx, is_represented_by).
@@ -99,3 +100,9 @@ print_game_state :-
     write("Pieces:\n"),
     get_pieces(Pieces),
     print_board(Pieces).
+
+print_positions([]).
+print_positions([Pos|Other_Pos]) :-
+    write(Pos),
+    write("\n"),
+    print_positions(Other_Pos).
