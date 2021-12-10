@@ -4,6 +4,10 @@
 > Luis Alejandro Lara Rojas C-412
 
 
+## Introducción:
+El juego tiene dos modos: Player Vs. Player y Player Vs. AI. 
+(resumen de cómo funciona por arribita)
+
 ### Tablero:
 Para representar el tablero hexagonal del juego se utilizan 3 ejes prinmarios, en vez de dos como se utiliza en grids cuadrados.
 
@@ -12,6 +16,16 @@ Para representar el tablero hexagonal del juego se utilizan 3 ejes prinmarios, e
 Las coordenadas son:
 
 <img src="documentation/cube-coordinates.png" width=";" height="300;" />
+
+## Ejemplo de cómo jugar
+
+## Estructura del proyecto
+
+## Movimientos
+
+## Inteligencia Artificial
+
+
 
 
 
