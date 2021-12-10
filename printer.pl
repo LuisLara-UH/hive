@@ -78,30 +78,38 @@ print_initiate([Type, position(X1, X2, X3)]) :-
 
 print_game_instructions :-
     write("\n"),
-    write(" HIVE GAME INSTRUCTIONS \n"),
-    write("  ------------------------------------------------------------------------------------------------------------------------- \n"),
-    write("  |[ Queen Moves      ] - A Queen can move                  |\n"),
-    write("  |[ Beetle Moves     ] - A Beetle can move                 |\n"),
-    write("  |[ Grasshopper Moves] -                                   |\n"),
-    write("  |[ Spider Moves     ] -                                   |\n"),
-    write("  |[ Ant Moves        ] -                                   |\n"),
-    write("  |[ Ladybug Moves    ] -                                   |\n"), 
-    write("  |THE RESTRICTION FOR ALL MOVES:                                 |\n"),
+    write("  HIVE RULES:\n"),
+    write("   ------------------------------------------------------------------------------------------------------------------------ \n"),
+    write("  |The goal of the game is to totally surround the Queen of the opponent.                                                  |\n"),
+    write("  |For each turn you can decide either to move a piece or to place a new one. A new piece may not be placed next to        |\n"),
+    write("  |oppenent's pieces                                                                                                       |\n"),
+    write("  |[ Queen       ] - Moves one space per turn                                                                              |\n"),
+    write("  |[ Beetle      ] - Moves one space per turn and can move on top of the hive                                              |\n"),
+    write("  |[ Grasshopper ] - Jumps rom its space over any number of pieces (at least one) to the next unoccupied space along a     |\n"),
+    write("  |                  straight row of joined pieces                                                                         |\n"),
+    write("  |[ Spider      ] - Moves exactly 3 spaces per turn without backtrack                                                     |\n"),
+    write("  |[ Ant         ] - Moves anywhere around the Hive                                                                        |\n"),
+    write("  |[ Ladybug     ] - Moves three spaces: two ontop of the Hive, then one down                                              |\n"), 
+    write("  |[ Mosquito    ] - Takes on the movement ability of any creature of either color that it's touching                      |\n"), 
+    write("  |[ Pillbug     ] - Moves ne space at a time and allows to move an adjacent un-stacked piece two spaces                   |\n"), 
+    write("  |THE RESTRICTION FOR ALL MOVES:                                                                                          |\n"),
+    write("  |- One Hive rule                                                                                                         |\n"),
     write("  |________________________________________________________________________________________________________________________|\n"),
     write("\n"),
-    write(" ENJOY THE GAME (^.^)o[~] !"),
+    write("  ENJOY THE GAME (^.^)o[~] !"),
     write("\n").
 
 print_game_options :-
-    write("CHOOSE A GAME MODE:\n"),
-    write("1. WHITE PLAYER vs BLACK MACHINE\n"),
-    write("2. BLACK PLAYER vs WHITE MACHINE\n"),
-    write("3. PLAYER vs PLAYER\n"),
-    write("4. MACHINE vs MACHINE\n").
+    write("  CHOOSE A GAME MODE:\n"),
+    write("  1. WHITE PLAYER vs BLACK MACHINE\n"),
+    write("  2. BLACK PLAYER vs WHITE MACHINE\n"),
+    write("  3. PLAYER vs PLAYER\n"),
+    write("  4. MACHINE vs MACHINE\n"),
+    write('Example: \"1\".\n' ).
 
 print_winner(Color) :-
     write(Color),
-    write(" wins!!!\n").
+    write(" WINS!!!\n").
 
 print_board([]).
 print_board([X|Y]) :-
