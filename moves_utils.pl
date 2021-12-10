@@ -39,9 +39,7 @@ has_same_color_adjacent(Color1, Piece_Position, [piece(_, Color2, _, Q, R, S)|Y]
     same_color(Color1, Color2);
     has_same_color_adjacent(Color1, Piece_Position, Y).
 
-
 same_position(position(Q, R, S), position(Q, R, S)).
-
 
 is_adjacent(position(Q, R, S), Y) :-
     X1 is Q, X2 is R - 1, X3 is S + 1,
