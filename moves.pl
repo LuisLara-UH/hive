@@ -64,8 +64,6 @@ move_grasshopper(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, N
 
 move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "spider",
-    write("Moving spider...\n"),
-
     % First step
     is_adjacent(position(Q, R, S), position(First_Piece_Q, First_Piece_R, First_Piece_S)),
     is_valid_blank_position(position(First_Piece_Q, First_Piece_R, First_Piece_S)),
@@ -80,8 +78,7 @@ move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Ne
     \+ same_position(position(First_Piece_Q, First_Piece_R, First_Piece_S), position(Next_Q, Next_R, Next_S)),
     is_valid_blank_position(position(Next_Q, Next_R, Next_S)),
 
-    add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)),
-    write("Spider was moved.\n").
+    add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)).
 
 move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "ant",

@@ -6,7 +6,8 @@
     print_exit/0,
     print_game_instructions/0,
     print_game_state/0,
-    print_positions/1
+    print_positions/1,
+    print_game_options/0
     ]).
 
 :- op(700, yfx, is_represented_by).
@@ -85,11 +86,22 @@ print_game_instructions :-
     write("  |[ Spider Moves     ] -                                   |\n"),
     write("  |[ Ant Moves        ] -                                   |\n"),
     write("  |[ Ladybug Moves    ] -                                   |\n"), 
-    write("  |THE RESTRICTION FOR ALL MOVES: Move is only legal if friendly piece is not in it's way                                  |\n"),
+    write("  |THE RESTRICTION FOR ALL MOVES:                                 |\n"),
     write("  |________________________________________________________________________________________________________________________|\n"),
     write("\n"),
     write(" ENJOY THE GAME (^.^)o[~] !"),
     write("\n").
+
+print_game_options :-
+    write("CHOOSE A GAME MODE:\n"),
+    write("1. WHITE PLAYER vs BLACK MACHINE\n"),
+    write("2. BLACK PLAYER vs WHITE MACHINE\n"),
+    write("3. PLAYER vs PLAYER\n"),
+    write("4. MACHINE vs MACHINE\n").
+
+print_winner(Color) :-
+    write(Color),
+    write(" wins!!!\n").
 
 print_board([]).
 print_board([X|Y]) :-
