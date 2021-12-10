@@ -1,5 +1,4 @@
 :- module(utils, [
-    enemy_color/2,
     find_next_positions/3,
     board_value/2
     ]).
@@ -9,10 +8,6 @@
 :- [moves_utils].
 :- [turn].
 :- [printer].
-
-enemy_color(Color, EnemyColor) :-
-    (Color is "white", EnemyColor is "black");
-    (Color is "black", EnemyColor is "white").
 
 is_subset([], _).
 is_subset([Piece1|Other_Pieces], Set1) :-
@@ -57,4 +52,19 @@ find_next_positions(_, Pos_List, Pos_List).
 
 board_value(Pos, Val) :-
     find_next_positions(Pos, [], Pos_List),
-    length(Pos_List, Val).
+    length(Pos_List, Val1),
+    turn_color(Color),
+
+    (   
+        findall_pieces(piece("queen", Color, _,_,_,_,_), [piece(_, _, _,_, Q, R, S)|_]),
+        adjacent_pieces_amount(piece("queen", Color, _,_, Q, R, S), Val2);
+        Val2 is 0
+    ),
+    (
+        enemy_color(Color, EnemyColor),
+        findall_pieces(piece("queen", EnemyColor, _,_,_,_,_), [piece(_, _, _,_, Enemy_Q, Enemy_R, Enemy_S)|_]),
+        adjacent_pieces_amount(piece("queen", EnemyColor, _,_, Enemy_Q, Enemy_R, Enemy_S), Val3);
+        Val3 is 0
+    ),
+    
+    Val is Val1 + Val2 - Val3.

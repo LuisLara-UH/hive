@@ -9,10 +9,10 @@ change_turn :-
     retract(black_turn), !.
 
 change_turn :-
-    assert(black_turn).
+    assert(black_turn), !.
 
 turn_color(Color) :-
     black_turn, Color = "black", !. 
 
 turn_color(Color) :-
-    Color = "white".
+    \+ black_turn, Color = "white", !.

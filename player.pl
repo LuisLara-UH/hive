@@ -42,23 +42,23 @@ moves(Pos, PosList) :-
     find_next_positions(Pos, [], PosList).
 
 max_value(Pos, Player_Color) :-
-    last(Pos, piece(_, Player_Color, _,_,_,_,_)).
+    last(Pos, piece(_, Player_Color, _,_,_,_,_)), !.
 
 min_value(Pos, Player_Color) :-
-    \+ max_value(Pos, Player_Color).
+    \+ last(Pos, piece(_, Player_Color, _,_,_,_,_)), !.
 
 staticval(Pos, Val, Player_Color) :- 
+    turn_color(Player_Color), !,
     change_turn,
-    turn_color(Player_Color),
-    change_turn,
-    board_value(Pos, Val), !.
+    board_value(Pos, Val),
+    change_turn, !.
 
 staticval(Pos, Val, Player_Color) :-
     board_value(Pos, Val).
 
 alphabeta(Pos, Alpha, Beta, GoodPos, Val, Depth, Player_Color) :-
     moves(Pos, Poslist), !,
-    Next_Depth is Depth - 1,
+    Next_Depth = Depth - 1,
     (
         (
             Depth > 0,
@@ -71,13 +71,15 @@ alphabeta(Pos, Alpha, Beta, GoodPos, Val, Depth, Player_Color) :-
         )
     ).
 
-boundedbest([Pos|Poslist], Alpha, Beta, GoodPos, GoodVat, Depth, Player_Color) :-
+boundedbest([Pos|Poslist], Alpha, Beta, GoodPos, GoodVal, Depth, Player_Color) :-
     alphabeta( Pos, Alpha, Beta, _, Val, Depth, Player_Color),
     goodenough( Poslist, Alpha, Beta, Pos, Val, GoodPos, GoodVal, Depth, Player_Color).
 
 goodenough([], _, _, Pos, Val, Pos, Val, Depth, Player_Color) :- !.
 
-goodenough(_, Alpha, Beta, Pos, Val, Pos, Val, Depth, Player_Color) :- !.
+goodenough(_, Alpha, Beta, Pos, Val, Pos, Val, Depth, Player_Color) :- 
+    min_value(Pos, Player_Color), Val > Beta, !;
+    max_value(Pos, Player_Color), Val < Alpha, !.
 
 goodenough(Poslist, Alpha, Beta, Pos, Val, GoodPos, GoodVal, Depth, Player_Color) :-
     newbounds( Alpha, Beta, Pos, Val, NewAlpha, NewBeta, Player_Color),
@@ -90,4 +92,4 @@ newbounds(Alpha, Beta, Pos, Val, Val, Beta, Player_Color) :-
 newbounds(Alpha, Beta, Pos, Val, Alpha, Val, Player_Color) :-
     max_value(Pos, Player_Color), Val < Beta, !.
 
-newbounds(Alpha, Beta, _, _, Alpha, Beta).
+newbounds(Alpha, Beta, _, _, Alpha, Beta, Player_Color).
