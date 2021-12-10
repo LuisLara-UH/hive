@@ -7,7 +7,8 @@
     print_game_instructions/0,
     print_game_state/0,
     print_positions/1,
-    print_game_options/0
+    print_game_options/0,
+    print_winner/1
     ]).
 
 :- op(700, yfx, is_represented_by).
@@ -109,7 +110,7 @@ print_board([X|Y]) :-
     print_board(Y).
 
 print_game_state :-
-    write("Pieces:\n"),
+    write("Game state:\n"),
     get_pieces(Pieces),
     print_board(Pieces).
 

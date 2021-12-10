@@ -14,20 +14,34 @@
 initiate_piece(piece(Type, Color, _, _,  _, _, _), position(Q, R, S)) :-
     can_init_piece(piece(Type, Color, _, _,  _, _, _)),
     \+ position_filled(position(Q, R, S)),
-    \+ enemy_adjacent(piece(_, Color, _, _, Q, R, S)),
-    is_adjacent(position(Q, R, S), position(Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S)),
-    findall_pieces(piece(_,Color, "false",_, Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S), [_|_]),
+    (
+        (
+            \+ enemy_adjacent(piece(_, Color, _, _, Q, R, S)),
+            is_adjacent(position(Q, R, S), position(Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S)),
+            findall_pieces(piece(_,Color, "false",_, Same_Color_Adjacent_Q, Same_Color_Adjacent_R, Same_Color_Adjacent_S), [_|_])
+        );
+        (
+            (
+                enemy_adjacent(piece(_, Color, _, _, Q, R, S));
+                enemy_color(Color, EnemyColor),
+                findall_pieces(piece(_,EnemyColor,_,_,_,_,_), [])
+            ),
+            findall_pieces(piece(_,Color,_,_,_,_,_), []) 
+        )
+    ),
     add_piece(piece(Type, Color, "false", 0,  Q, R, S)).
 
 % move piece
 move_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
     Type = "queen",
+    turn_color(Color),
     is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)).
 
 move_beetle(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S)) :- 
     Type = "beetle",
+    turn_color(Color),
     is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     (
         (   % no piece in the position
@@ -53,6 +67,7 @@ move_beetle(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Ne
 
 move_grasshopper(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "grasshopper",
+    turn_color(Color),
     \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
     position_filled(position(Adj_Q, Adj_R, Adj_S)),
@@ -64,6 +79,7 @@ move_grasshopper(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, N
 
 move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "spider",
+    turn_color(Color),
     % First step
     is_adjacent(position(Q, R, S), position(First_Piece_Q, First_Piece_R, First_Piece_S)),
     is_valid_blank_position(position(First_Piece_Q, First_Piece_R, First_Piece_S)),
@@ -82,6 +98,7 @@ move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Ne
 
 move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "ant",
+    turn_color(Color),
     \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     surround_hive_bfs(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)).
@@ -89,6 +106,7 @@ move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_
 
 move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "ladybug",
+    turn_color(Color),
     is_adjacent(position(Q, R, S), position(First_Piece_Q, First_Piece_R, First_Piece_S)),
     position_filled(position(First_Piece_Q, First_Piece_R, First_Piece_S)),
     is_adjacent(position(First_Piece_Q, First_Piece_R, First_Piece_S), position(Second_Piece_Q, Second_Piece_R, Second_Piece_S)),
@@ -99,6 +117,7 @@ move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, N
 
 move_mosquito(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "mosquito",
+    turn_color(Color),
     (
         (
             (
@@ -126,13 +145,28 @@ move_mosquito(piece(Type, Color, _, Pile_Number, Q, R, S), position(Next_Q, Next
 
 move_pillbug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
     Type = "pillbug",
+    turn_color(Color),
     is_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S)),
     \+ position_filled(position(Next_Q, Next_R, Next_S)), % no piece in the position
     add_piece(piece(Type, Color, Piled, Pile_Number, Next_Q, Next_R, Next_S)). 
 
+pillbug_force(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S)) :-
+    \+ position_filled(position(Next_Q, Next_R, Next_S)),
+    turn_color(Turn_Color),
+    pillbug_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S), Turn_Color),
+    add_piece(piece(Type, Color, "false", 0, Next_Q, Next_R, Next_S)), 
+    !,
+
+    % Set last piled piece as unpiled
+    Last_Piled_Number is Pile_Number - 1,
+    (
+        \+ findall_pieces(piece(_, _, "true", Last_Piled_Number, Q, R, S), [piece(Piece_Type, Piece_Color, _,_,_,_,_)|_]);
+        remove_piece(piece(Piece_Type, Piece_Color,"true", Last_Piled_Number, Q, R, S)),
+        add_piece(piece(Piece_Type, Piece_Color, "false", Last_Piled_Number, Q, R, S))
+    ).
+
 
 move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :- 
-    turn_color(Color),
     remove_piece(piece(Type, Color, "false", Pile_Number, Q, R, S)), !,
     (
         (
@@ -143,14 +177,17 @@ move_piece(position(Q, R, S), position(Next_Q, Next_R, Next_S))  :-
         \+ add_piece(piece(Type, Color, Piled, Pile_Number, Q, R, S))
     ), !,
     (
-        (move_beetle(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_grasshopper(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_mosquito(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
-        move_pillbug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S)));
+        (
+            move_beetle(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_queen(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_grasshopper(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_spider(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_ant(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_ladybug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_mosquito(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            move_pillbug(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S));
+            pillbug_force(piece(Type, Color, Piled, Pile_Number, Q, R, S), position(Next_Q, Next_R, Next_S))
+        );
         \+ add_piece(piece(Type, Color, Piled, Pile_Number, Q, R, S))
     ), !,
     (

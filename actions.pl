@@ -26,7 +26,10 @@ move [Move, Dim1, Dim2, Dim3, To, Next_Dim1, Next_Dim2, Next_Dim3] :-
     atom_number(Next_Dim2, Y2),
     atom_number(Next_Dim3, Y3),
     print_move([position(X1, X2, X3), position(Y1, Y2, Y3)]),
-    move_piece(position(X1, X2, X3), position(Y1, Y2, Y3)),
+    (
+        move_piece(position(X1, X2, X3), position(Y1, Y2, Y3));
+        \+ write("Invalid move.\n")
+    ),
     change_turn. 
 
 % initiate <Type> <Dim1> <Dim2> <Dim3>
@@ -37,7 +40,10 @@ initiate [Init, Type, Dim1, Dim2, Dim3] :-
     atom_number(Dim3, X3),
     print_initiate([Type, position(X1, X2, X3)]),
     turn_color(Color),
-    initiate_piece(piece(Type, Color, _, _, _, _, _), position(X1, X2, X3)),
+    (
+        initiate_piece(piece(Type, Color, _, _, _, _, _), position(X1, X2, X3));
+        \+ write("Invalid initiate.\n")
+    ),
     change_turn. 
 
 % instructions

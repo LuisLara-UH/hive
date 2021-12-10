@@ -7,7 +7,11 @@
     enemy_adjacent/1,
     is_valid_blank_position/1,
     can_init_piece/1,
-    same_position/2
+    same_position/2,
+    pillbug_adjacent/3,
+    enemy_color/2,
+    adjacent_pieces/3,
+    adjacent_pieces_amount/2
     ]).
 
 :- [piece].
@@ -62,6 +66,23 @@ is_adjacent(position(Q, R, S), Y) :-
 
 same_color(Color, Color).
 
+enemy_color(Color, EnemyColor) :-
+    (Color = "white", EnemyColor = "black");
+    (Color = "black", EnemyColor = "white").
+
+adjacent_pieces(piece(_,_,_,_,Q, R, S), Adj_Pieces_Found, Adj_Pieces) :-
+    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
+    findall_pieces(piece(_,_,_,_,Adj_Q, Adj_R, Adj_S), [NewPiece|_]),
+    \+ member(NewPiece, Adj_Pieces_Found),
+    append(Adj_Pieces_Found, [NewPiece], New_Adj_Pieces_Found),
+    adjacent_pieces(piece(_,_,_,_,Q, R, S), New_Adj_Pieces_Found, Adj_Pieces), !.
+
+adjacent_pieces(_, Adj_Pieces, Adj_Pieces).
+
+adjacent_pieces_amount(Piece, Amount) :-
+    adjacent_pieces(Piece, [], Adj_Pieces),
+    length(Adj_Pieces, Amount).
+
 enemy_adjacent(piece(_, Color, _, _, Q, R, S)) :-
     (
       (Color = "white", Adjacent_Color = "black");  
@@ -70,6 +91,16 @@ enemy_adjacent(piece(_, Color, _, _, Q, R, S)) :-
     is_adjacent(position(Q, R, S), position(Adjacent_Q, Adjacent_R, Adjacent_S)),
     findall_pieces(piece(_, Adjacent_Color, "false", _, Adjacent_Q, Adjacent_R, Adjacent_S), [_|_]).
 
+pillbug_adjacent(position(Q, R, S), position(Next_Q, Next_R, Next_S), Color) :-
+    is_adjacent(position(Q, R, S), position(Adj_Q, Adj_R, Adj_S)),
+    is_adjacent(position(Next_Q, Next_R, Next_S), position(Adj_Q, Adj_R, Adj_S)),
+    (
+        findall_pieces(piece("pillbug", Color, "false", _, Adj_Q, Adj_R, Adj_S), [_|_]);
+        (
+            findall_pieces(piece("mosquito", Color, "false", _, Adj_Q, Adj_R, Adj_S), [_|_]),
+            pillbug_adjacent(position(Adj_Q, Adj_R, Adj_S), _, _)    
+        )
+    ).
 
 % north
 n_neig(piece(_, _, _, _, Q, R, S), X) :- 
