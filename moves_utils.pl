@@ -6,7 +6,8 @@
     surround_hive_bfs/2,
     enemy_adjacent/1,
     is_valid_blank_position/1,
-    can_init_piece/1
+    can_init_piece/1,
+    same_position/2
     ]).
 
 :- [piece].
