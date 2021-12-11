@@ -136,6 +136,69 @@ Para mostrar las instrucciones se utiliza el comando:
 
 *Nota:* Todos los comandos que se inserten deben estar entre comillas dobles ("") y terminar en punto (.).
 
+## Ejemplo de funcionamiento
+
+El proyecto comienza la ejecución en `main.pl` en el predicado `start_game`:
+
+```
+[main.pl].
+start_game.
+```
+
+Cuando se ejecutan estas líneas se muestran las instrucciones y los modos de juego:
+```
+1. WHITE PLAYER vs BLACK MACHINE
+2. BLACK PLAYER vs WHITE MACHINE
+3. PLAYER vs PLAYER
+4. MACHINE vs MACHINE
+```
+
+Aquí se inserta el modo de juego número 1 y luego se presiona enter:
+```
+"1".
+```
+
+A continuación se muestra el estado actual del juego y el turno correspondiente:
+```
+Game state:
+white player's turn.
+```
+
+Se debe insertar la jugada deseada. En este caso será la inicialización de la Reina en la posición (0, 0, 0):
+```
+"init queen 0 0 0".
+```
+El juego actualizado será:
+```
+|: "init queen 0 0 0".
+Initiate queen at position [0,0,0]...
+black AI turn.
+Thinking...
+Game state:
+[W Q 0 0 0]
+[B Q -1 0 1]
+white player's turn.
+```
+Hagamos un movimiento inválido:
+```
+"move 0 0 0 to -2 -1 3".
+```
+La respuesta será:
+```
+Move piece from position [0,0,0] to position [-2,-1,3]...
+Invalid move.
+Game state:
+[B Q -1 0 1]
+[W Q 0 0 0]
+white player's turn.
+```
+Para salir del juego:
+```
+"exit".
+Exiting game...
+true.
+```
+
 ## Inteligencia Artificial
 El algoritmo utilizado es AlphaBeta, de tipo MiniMax, el cual explora el árbol de posibles movimientos para calcular cuál es el mejor utilizando alguna heurística. 
 
@@ -148,4 +211,5 @@ La heurística utilizada en este proyecto es $EM + EQ - MQ$, donde:
 
 Para reducir el tiempo de ejecución del algoritmo, se establece una profundidad máxima en la cual se va a podar el árbol de posibles jugadas.
 
-Esta profundidad está igualada a 1 en el archivo `main.pl` en la línea
+Esta profundidad está igualada a 1 en el archivo `main.pl` en la línea 78. Este valor puede ser cambiado en caso de querer una mayor profundidad.
+

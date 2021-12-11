@@ -105,8 +105,7 @@ print_game_options :-
     write("  1. WHITE PLAYER vs BLACK MACHINE\n"),
     write("  2. BLACK PLAYER vs WHITE MACHINE\n"),
     write("  3. PLAYER vs PLAYER\n"),
-    write("  4. MACHINE vs MACHINE\n"),
-    write('Example: \"1\".\n' ).
+    write("  4. MACHINE vs MACHINE\n").
 
 print_winner(Color) :-
     write(Color),

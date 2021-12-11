@@ -47,7 +47,8 @@ execute_action Action :-
     (
         move Action;
         initiate Action;
-        instructions Action
+        instructions Action;
+        exit Action
     ),
     exit Action.
 
@@ -82,11 +83,6 @@ execute_ai_action :-
     ), 
     restart_game(BestSucc),
     ((\+ turn_color(Color)); change_turn),
-    write(Color),
-    write("\n"),
-    turn_color(TurnColor),
-    write(TurnColor),
-    write("\n"),
     !, fail. 
 
 execute_game :-
@@ -104,6 +100,4 @@ start_game :-
     print_game_options,
     read(Option),
     game_mode(Option),
-    %add_piece(piece("queen", "white", "false", 0, 0, 0, 0)),
-    %add_piece(piece("queen", "black", "false", 0, 0, -1, 1)),
     execute_game.
